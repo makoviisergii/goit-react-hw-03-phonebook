@@ -4,6 +4,7 @@ import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 
+const CONTACTS_KEY = 'contacts';
 export class App extends Component {
   state = {
     contacts: [
@@ -15,6 +16,19 @@ export class App extends Component {
       searchStr: '',
     },
   };
+  componentDidMount() {
+    const contacts = localStorage.getItem(CONTACTS_KEY);
+    if (contacts && JSON.parse(contacts).length) {
+      this.setState({
+        contacts: JSON.parse(contacts),
+      });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleChengeInput = str => {
     this.setState(prevState => ({
